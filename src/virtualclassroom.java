@@ -11,6 +11,7 @@ class VC {
     public void addClassroom(String className) {
         // Initialize an empty list for students in the new classroom
         stringListHashMap.put(className, new ArrayList<>());
+        assignmentMap.put(className,new ArrayList<>());
         // Log the creation of the new classroom
         LOGGER.info("Classroom " + className + " has been created.");
     }
@@ -141,7 +142,7 @@ public class virtualclassroom {
             LOGGER1.info("9. Exit");
             try {
                 // Read user input from 1-9
-                int choice = scanner.nextInt();
+                int choice = Integer.parseInt(scanner.nextLine().trim());
                 // To check that the user input is within the valid range of 1-9
                 if (choice < 1 || choice > 9) {
                     LOGGER1.warning("Please enter a number between 1 and 9.");
@@ -151,19 +152,19 @@ public class virtualclassroom {
                 switch (choice) {
                     case 1:
                         LOGGER1.info("Enter Classroom Name: ");
-                        String classroomName = scanner.next();
+                        String classroomName = scanner.nextLine().trim();
                         virtualClassroom.addClassroom(classroomName);
                         break;
                     case 2:
                         LOGGER1.info("Enter Student ID: ");
-                        String studentId = scanner.next();
+                        String studentId = scanner.nextLine().trim();
                         LOGGER1.info("Enter Classroom for Student: ");
-                        String studentClassroom = scanner.next();
+                        String studentClassroom = scanner.nextLine().trim();
                         virtualClassroom.addStudent(studentId, studentClassroom);
                         break;
                     case 3:
                         LOGGER1.info("Enter the class name you want to remove:");
-                        String remove = scanner.next();
+                        String remove = scanner.nextLine().trim();
                         virtualClassroom.removeclass(remove);
                         break;
                     case 4:
@@ -171,28 +172,28 @@ public class virtualclassroom {
                         break;
                     case 5:
                         LOGGER1.info("Enter Classroom Name to display students: ");
-                        String listofstudentsofaclassroom = scanner.next();
+                        String listofstudentsofaclassroom = scanner.nextLine().trim();
                         virtualClassroom.displaythestudentsofclassroom(listofstudentsofaclassroom);
                         break;
                     case 6:
                         LOGGER1.info("Enter Classroom for Assignment: ");
-                        String assignmentClassroom = scanner.next();
+                        String assignmentClassroom = scanner.nextLine().trim();
                         LOGGER1.info("Enter Assignment Details: ");
-                        String assignmentDetails = scanner.next();
+                        String assignmentDetails = scanner.nextLine().trim();
                         virtualClassroom.scheduleAssignment(assignmentClassroom, assignmentDetails);
                         break;
                     case 7:
                         LOGGER1.info("Enter Student ID for Assignment Submission: ");
-                        String submissionStudentId = scanner.next();
+                        String submissionStudentId = scanner.nextLine().trim();
                         LOGGER1.info("Enter Classroom for Assignment Submission: ");
-                        String submissionClassroom = scanner.next();
+                        String submissionClassroom = scanner.nextLine().trim();
                         LOGGER1.info("Enter Assignment Details for Submission: ");
-                        String submissionAssignmentDetails = scanner.next();
+                        String submissionAssignmentDetails = scanner.nextLine().trim();
                         virtualClassroom.assignmentSubmission(submissionStudentId, submissionClassroom, submissionAssignmentDetails);
                         break;
                     case 8:
                         LOGGER1.info("Enter Classroom to display assignments: ");
-                        String displayClassroom = scanner.next();
+                        String displayClassroom = scanner.nextLine().trim();
                         virtualClassroom.displayAssignments(displayClassroom);
                         break;
                     case 9:
@@ -203,6 +204,9 @@ public class virtualclassroom {
                         LOGGER1.warning("Enter a valid number to proceed.");
                 }
             } catch (InputMismatchException e) {
+                LOGGER1.warning("Please enter a valid number.");
+                scanner.next();
+            } catch(Exception e){
                 LOGGER1.warning("Please enter a valid number.");
                 scanner.next();
             }
