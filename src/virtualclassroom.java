@@ -2,7 +2,7 @@ import java.util.*;
 import java.util.logging.Logger;
 // Class representing the Virtual Classroom
 class  vc {
-    // Logger for the VirtualClassroom class
+    // Logger for the  vc class
     private static final Logger LOGGER = Logger.getLogger(vc.class.getName());
     // Maps to store student lists and assignments for each classroom
     private Map<String, List<String>> studentMap = new HashMap<>();
