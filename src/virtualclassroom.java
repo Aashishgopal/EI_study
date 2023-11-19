@@ -1,37 +1,35 @@
 import java.util.*;
 import java.util.logging.Logger;
 // Class representing the Virtual Classroom
-class VC {
-    // Logger for the VC class
-    private static final Logger LOGGER = Logger.getLogger(VC.class.getName());
+class  vc {
+    // Logger for the VirtualClassroom class
+    private static final Logger LOGGER = Logger.getLogger(vc.class.getName());
     // Maps to store student lists and assignments for each classroom
-    Map<String, List<String>> stringListHashMap = new HashMap<>();
-    Map<String, List<String>> assignmentMap = new HashMap<>();
+    private Map<String, List<String>> studentMap = new HashMap<>();
+    private Map<String, List<AbstractMap.SimpleEntry<String, List<String>>>> assignmentMap = new HashMap<>();
     // Method to add a new classroom
     public void addClassroom(String className) {
         // Initialize an empty list for students in the new classroom
-        stringListHashMap.put(className, new ArrayList<>());
-        assignmentMap.put(className,new ArrayList<>());
+        studentMap.put(className, new ArrayList<>());
+        assignmentMap.put(className, new ArrayList<>());
         // Log the creation of the new classroom
         LOGGER.info("Classroom " + className + " has been created.");
     }
     // Method to display a list of existing classrooms
-    public void classroomList() {
+    public void displayClassrooms() {
         // Iterate through classrooms and log each classroom name
-        for (String className : stringListHashMap.keySet()) {
+        for (String className : studentMap.keySet()) {
             LOGGER.info(className);
         }
     }
     // Method to remove a classroom
-    public void removeclass(String removeclasses) {
-
+    public void removeClassroom(String removeClassroom) {
         // Check if the class exists
-        if (stringListHashMap.containsKey(removeclasses)) {
+        if (studentMap.containsKey(removeClassroom)) {
             // Log the removal of the class
-            LOGGER.info("The class {} is removed".format(removeclasses));
+            LOGGER.info("The class " + removeClassroom + " is removed");
             // Remove the class from the map
-            stringListHashMap.remove(removeclasses);
-
+            studentMap.remove(removeClassroom);
         }
         // If the class was not found, log a message
         else {
@@ -39,33 +37,33 @@ class VC {
         }
         // Log the remaining classrooms after removal
         LOGGER.info("The remaining classrooms are:");
-        for (String i : stringListHashMap.keySet()) {
-            LOGGER.info(i);
+        for (String className : studentMap.keySet()) {
+            LOGGER.info(className);
         }
     }
-    // add a student to a specific classroom
+    // Add a student to a specific classroom
     public void addStudent(String studentId, String className) {
         // Check if the classroom exists
-        if (stringListHashMap.containsKey(className)) {
+        if (studentMap.containsKey(className)) {
             // Add the student to the list
-            List<String> students = stringListHashMap.get(className);
+            List<String> students = studentMap.get(className);
             students.add(studentId);
-            stringListHashMap.put(className, students);
+            studentMap.put(className, students);
             // Log the enrollment of the student
-            LOGGER.info("Student %s has been enrolled in {}".format(studentId, className));
+            LOGGER.info("Student " + studentId + " has been enrolled in " + className);
         } else {
             // Log a message if the classroom is not found
             LOGGER.info("Classroom not found to add student ");
         }
     }
     // Method to display the list of students for a specific classroom
-    public void displaythestudentsofclassroom(String listofclassstudents) {
+    public void displayStudentsOfClassroom(String classroomName) {
         int flag = 0;
         // Iterate through classrooms to find the required.
-        for (String className : stringListHashMap.keySet()) {
-            if (className.equals(listofclassstudents)) {
+        for (String className : studentMap.keySet()) {
+            if (className.equals(classroomName)) {
                 // Log the list of students for the specified classroom
-                LOGGER.info(String.valueOf(stringListHashMap.get(className)));
+                LOGGER.info(String.valueOf(studentMap.get(className)));
                 flag = 1;
             }
         }
@@ -81,11 +79,11 @@ class VC {
         // Checking if the classroom exists
         if (assignmentMap.containsKey(className)) {
             // Add the assignment to the classroom's list
-            List<String> assignments = assignmentMap.get(className);
-            assignments.add(assignmentDetails);
+            List<AbstractMap.SimpleEntry<String, List<String>>> assignments = assignmentMap.get(className);
+            assignments.add(new AbstractMap.SimpleEntry<>(assignmentDetails, new ArrayList<>()));
             assignmentMap.put(className, assignments);
             // Log the scheduling of the assignment
-            LOGGER.info("Assignment for {} has been scheduled.".format(className));
+            LOGGER.info("Assignment for " + className + " has been scheduled.");
         } else {
             // Log a message if the classroom is not found
             LOGGER.info("Classroom not found to schedule assignment.");
@@ -94,17 +92,17 @@ class VC {
     // To submit an assignment by a student for a specific classroom
     public void assignmentSubmission(String studentId, String className, String assignmentDetails) {
         // TO check if the student and classroom both there in the list
-        if (stringListHashMap.containsKey(className) && stringListHashMap.get(className).contains(studentId)) {
+        if (studentMap.containsKey(className) && studentMap.get(className).contains(studentId)) {
             // To get the list of assignments for the classroom
-            List<String> assignments = assignmentMap.get(className);
-            if (assignments == null) {
-                assignments = new ArrayList<>();
+            List<AbstractMap.SimpleEntry<String, List<String>>> assignments = assignmentMap.get(className);
+            for (AbstractMap.SimpleEntry<String, List<String>> entry : assignments) {
+                if (entry.getKey().equals(assignmentDetails)) {
+                    entry.getValue().add(studentId);
+                    break;
+                }
             }
-            // To add the assignment to the list and update the map
-            assignments.add(assignmentDetails);
-            assignmentMap.put(className, assignments);
             // Log the submission of the assignment
-            LOGGER.info("Assignment submitted by Student {} in {}".format(studentId, className));
+            LOGGER.info("Assignment submitted by Student " + studentId + " in " + className);
         } else {
             // Log a message if the student or classroom is not found
             LOGGER.info("Student or class not found for assignment submission.");
@@ -113,101 +111,101 @@ class VC {
     // To display assignments for a classroom
     public void displayAssignments(String className) {
         // To get the list of assignments for the classroom or an empty list
-        List<String> assignments = assignmentMap.getOrDefault(className, Collections.emptyList());
+        List<AbstractMap.SimpleEntry<String, List<String>>> assignments = assignmentMap.getOrDefault(className, Collections.emptyList());
         // Log the assignments for the specified classroom
-        LOGGER.info("Assignments for {}: {}".format(className, assignments));
+        LOGGER.info(assignments.toString());
     }
 }
 // Main class
 public class virtualclassroom {
     // Logger
-    private static final Logger LOGGER1= Logger.getLogger(virtualclassroom.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(virtualclassroom.class.getName());
     // Main method for java file
     public static void main(String[] args) {
         //for user input
         Scanner scanner = new Scanner(System.in);
         // Creating an instance of the Virtual Classroom
-        VC virtualClassroom = new VC();
+        vc virtualClassroom = new vc();
         while (true) {
-            LOGGER1.info("VIRTUAL CLASSROOM");
-            LOGGER1.info("Choose an action:");
-            LOGGER1.info("1. Add Classroom");
-            LOGGER1.info("2. Add Student");
-            LOGGER1.info("3. Remove class");
-            LOGGER1.info("4. Display classrooms");
-            LOGGER1.info("5. Display students in classroom");
-            LOGGER1.info("6. Schedule Assignment");
-            LOGGER1.info("7. Submit Assignment");
-            LOGGER1.info("8. Display Assignments");
-            LOGGER1.info("9. Exit");
+            LOGGER.info("VIRTUAL CLASSROOM");
+            LOGGER.info("Choose an action:");
+            LOGGER.info("1. Add Classroom");
+            LOGGER.info("2. Add Student");
+            LOGGER.info("3. Remove class");
+            LOGGER.info("4. Display classrooms");
+            LOGGER.info("5. Display students in classroom");
+            LOGGER.info("6. Schedule Assignment");
+            LOGGER.info("7. Submit Assignment");
+            LOGGER.info("8. Display Assignments");
+            LOGGER.info("9. Exit");
             try {
                 // Read user input from 1-9
                 int choice = Integer.parseInt(scanner.nextLine().trim());
                 // To check that the user input is within the valid range of 1-9
                 if (choice < 1 || choice > 9) {
-                    LOGGER1.warning("Please enter a number between 1 and 9.");
-                    continue; // Skip the rest of the loop and go  for switch statement
+                    LOGGER.warning("Please enter a number between 1 and 9.");
+                    continue; // Skip the rest of the loop and go for switch statement
                 }
-                // Switch case  as per input given
+                // Switch case as per input given
                 switch (choice) {
                     case 1:
-                        LOGGER1.info("Enter Classroom Name: ");
+                        LOGGER.info("Enter Classroom Name: ");
                         String classroomName = scanner.nextLine().trim();
                         virtualClassroom.addClassroom(classroomName);
                         break;
                     case 2:
-                        LOGGER1.info("Enter Student ID: ");
+                        LOGGER.info("Enter Student ID: ");
                         String studentId = scanner.nextLine().trim();
-                        LOGGER1.info("Enter Classroom for Student: ");
+                        LOGGER.info("Enter Classroom for Student: ");
                         String studentClassroom = scanner.nextLine().trim();
                         virtualClassroom.addStudent(studentId, studentClassroom);
                         break;
                     case 3:
-                        LOGGER1.info("Enter the class name you want to remove:");
+                        LOGGER.info("Enter the class name you want to remove:");
                         String remove = scanner.nextLine().trim();
-                        virtualClassroom.removeclass(remove);
+                        virtualClassroom.removeClassroom(remove);
                         break;
                     case 4:
-                        virtualClassroom.classroomList();
+                        virtualClassroom.displayClassrooms();
                         break;
                     case 5:
-                        LOGGER1.info("Enter Classroom Name to display students: ");
-                        String listofstudentsofaclassroom = scanner.nextLine().trim();
-                        virtualClassroom.displaythestudentsofclassroom(listofstudentsofaclassroom);
+                        LOGGER.info("Enter Classroom Name to display students: ");
+                        String listofStudentsOfClassroom = scanner.nextLine().trim();
+                        virtualClassroom.displayStudentsOfClassroom(listofStudentsOfClassroom);
                         break;
                     case 6:
-                        LOGGER1.info("Enter Classroom for Assignment: ");
+                        LOGGER.info("Enter Classroom for Assignment: ");
                         String assignmentClassroom = scanner.nextLine().trim();
-                        LOGGER1.info("Enter Assignment Details: ");
+                        LOGGER.info("Enter Assignment Details: ");
                         String assignmentDetails = scanner.nextLine().trim();
                         virtualClassroom.scheduleAssignment(assignmentClassroom, assignmentDetails);
                         break;
                     case 7:
-                        LOGGER1.info("Enter Student ID for Assignment Submission: ");
+                        LOGGER.info("Enter Student ID for Assignment Submission: ");
                         String submissionStudentId = scanner.nextLine().trim();
-                        LOGGER1.info("Enter Classroom for Assignment Submission: ");
+                        LOGGER.info("Enter Classroom for Assignment Submission: ");
                         String submissionClassroom = scanner.nextLine().trim();
-                        LOGGER1.info("Enter Assignment Details for Submission: ");
+                        LOGGER.info("Enter Assignment Details for Submission: ");
                         String submissionAssignmentDetails = scanner.nextLine().trim();
                         virtualClassroom.assignmentSubmission(submissionStudentId, submissionClassroom, submissionAssignmentDetails);
                         break;
                     case 8:
-                        LOGGER1.info("Enter Classroom to display assignments: ");
+                        LOGGER.info("Enter Classroom to display assignments: ");
                         String displayClassroom = scanner.nextLine().trim();
                         virtualClassroom.displayAssignments(displayClassroom);
                         break;
                     case 9:
-                        LOGGER1.info("Exiting the program.");
+                        LOGGER.info("Exiting the program.");
                         System.exit(0);
                         break;
                     default:
-                        LOGGER1.warning("Enter a valid number to proceed.");
+                        LOGGER.warning("Enter a valid number to proceed.");
                 }
             } catch (InputMismatchException e) {
-                LOGGER1.warning("Please enter a valid number.");
+                LOGGER.warning("Please enter a valid number.");
                 scanner.next();
-            } catch(Exception e){
-                LOGGER1.warning("Please enter a valid number.");
+            } catch (Exception e) {
+                LOGGER.warning("Please enter a valid number.");
                 scanner.next();
             }
         }
